@@ -2,6 +2,11 @@
  *  Module Dependencies
  */
 
+var errorhandler = require('errorhandler');
+var session = require('express-session');
+var logger = require('logger');
+var favicon = require('favicon'); 
+var csrf = require('csurf');
 var express = require('express');
 var routes = require('./routes');
 var tasks = require('./routes/tasks');
@@ -28,13 +33,11 @@ app.locals.appname = 'Express.js Todo App'
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
-app.use(express.favicon());
-app.use(express.logger('dev'));
-app.use(express.bodyParser());
-app.use(express.methodOverride());
-app.use(express.cookieParser());
-app.use(express.session({secret: 'keyboard pupper'}));
-app.use(express.csrf());
+app.use(logger('dev'));
+app.use(bodyParser());
+app.use(cookieParser());
+app.use(session({secret: 'keyboard pupper'}));
+app.use(csrf());
 
 app.use(require('less-middleware')({ src: __dirname + '/public', compress: true}));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -42,12 +45,11 @@ app.use(function(req, res, next) {
     res.locals._csrf = req.session._csrf;
     return next();
 })
-app.use(app.router);
 
 
 // development only
 if ('development' == app.get('env')) {
-    app.use(express.errorHandler());
+    app.use(errorhandler());
 }
 app.param('task_id', function(req, res, next, taskId) {
     req.db.tasks.findById(taskId, function(error, task){
