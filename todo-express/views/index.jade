@@ -1,0 +1,19 @@
+extends layout
+
+block content
+    .menu
+        h2 menu
+        ul.nav.nav-pils
+            li.active
+                a(href="/tasks") Home
+            li
+                a(href="/tasks") Todo List
+            li 
+                a(href="/tasks") Completed
+    .home
+        p This is an example of classical (no front-end JS frameworks) web app
+            a(href="http://expressjsguide.com") Express.js Guide
+            |.
+        p The full source code is available at
+            a(href='http://github.com/azat-co/todo-express') github.com/azat-co/todo-express
+            |.
