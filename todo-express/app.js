@@ -36,10 +36,13 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser());
 app.use(cookieParser());
-app.use(session({secret: 'keyboard pupper'}));
+app.use(session({  secret: 'keyboard pupper'
+                 , resave: 'false'
+                 , saveUninitialized: true
+                }));
 app.use(csrf());
 
-app.use(require('less-middleware')({ src: __dirname + '/public', compress: true}));
+app.use(require('less-middleware')(__dirname + '/public'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(function(req, res, next) {
     res.locals._csrf = req.session._csrf;
@@ -65,11 +68,11 @@ app.get('/tasks', tasks.list);
 app.post('/tasks', tasks.markAllCompleted);
 app.post('/tasks', tasks.add);
 app.post('/tasks/:task_id', tasks.markCompleted);
-app.del('/tasks/:task_id', tasks.del);
+app.delete('/tasks/:task_id', tasks.del);
 app.get('/tasks/completed', tasks.completed);
 
 app.all('*', function(req, res) {
-    res.send(404);
+    res.sendStatus(404);
 })
 
 http.createServer(app).listen(app.get('port'), function(){
