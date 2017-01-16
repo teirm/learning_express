@@ -16,7 +16,7 @@ var mongoskin = require('mongoskin');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var db = mongoskin.db('mongodb://localhost:27017/todo?auto_reconnect', {safe:true});
+var db = mongoskin.db('mongodb://localhost:27017/todo', {safe:true});
 
 var app = express();
 
@@ -45,7 +45,7 @@ app.use(csrf());
 app.use(require('less-middleware')(__dirname + '/public'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(function(req, res, next) {
-    res.locals._csrf = req.session._csrf;
+    res.locals._csrf = req.csrfToken();
     return next();
 })
 
