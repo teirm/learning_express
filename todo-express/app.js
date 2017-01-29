@@ -17,12 +17,14 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var db = mongoskin.db('mongodb://localhost:27017/todo', {safe:true});
+var debug = require('debug')
 
 var app = express();
 
 app.use(function(req, res, next) {
     req.db = {};
     req.db.tasks = db.collection('tasks');
+    debug('SET REQUEST TASK DB'); 
     next();
 })
 
@@ -56,8 +58,16 @@ if ('development' == app.get('env')) {
 }
 app.param('task_id', function(req, res, next, taskId) {
     req.db.tasks.findById(taskId, function(error, task){
-        if (error) return next(error);
-        if (!task) return next(new Error('Task is not found.'));
+        if (error) {
+            debug('ERROR: req.db.tasks.findById failed!'); 
+            return next(error);
+        } 
+        if (!task) { 
+            debug('TASK NOT FOUND'); 
+            return next(new Error('Task is not found.'));
+        }
+
+        debug('TASK ASSIGNED TO REQUEST');
         req.task = task;
         return next();
     });
