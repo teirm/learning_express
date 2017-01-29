@@ -28,14 +28,4 @@ $alert.trigger('error', error);
 }
 })
 });
-$.ajax({
-    type: 'ADD',
-    url: '/tasks/' + $target.attr('data-task-id'),
-    data: {
-        _csrf: $target.attr('data-csrf')
-    },
-    error: function(error) {
-        $alert.trigger('error', 'No information to add.');
-    }
-});
 })
